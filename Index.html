@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TON Jetton Reward Game</title>
+  <!-- Including TONConnect SDK from a CDN -->
+  <script src="https://unpkg.com/@tonconnect/sdk"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 40px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to the Jetton Reward Game!</h1>
+  <p>Click below to claim your reward from our smart contract.</p>
+  <button id="claimButton">Claim Reward</button>
+  <p id="status"></p>
+
+  <script>
+    // Initialize TONConnect
+    const sdk = new TonConnectSDK.TonConnect();
+
+    // The opcode for claim_reward is 1. In our smart contract it's declared as a 32-bit integer.
+    const CLAIM_OPCODE = 1;
+
+    async function connectWallet() {
+      try {
+        // This triggers the connection flow (e.g. Tonkeeper popup)
+        const wallet = await sdk.connect();
+        return wallet;
+      } catch (error) {
+        console.error("Wallet connection error:", error);
+        return null;
+      }
+    }
+
+    async function sendClaimTransaction() {
+      // Trigger wallet connection
+      const wallet = await connectWallet();
+      if (!wallet) {
+        document.getElementById('status').innerText = "Wallet connection failed!";
+        return;
+      }
+
+      // IMPORTANT:
+      // In a real implementation, you should use a TON client library
+      // to encode your message in the proper cell format.
+      // For demonstration, we are simply using a hex payload.
+      // Here, "00000001" represents the opcode (32 bits with the value 1).
+      const payloadHex = "00000001";
+
+      // Your deployed smart contract testnet address
+      const contractAddress = "EQAvEC9eOV7l2KZSq76YMOVhyRPWyocaj46g1WWbHNyA3h9M";
+
+      // Create a transaction object.
+      // We mirror the parameters used in your smart contract:
+      // • value: a small TON amount (0.05 TON in nanoton) so the contract can process it.
+      // • body: the payload with our opcode.
+      const tx = {
+        to: contractAddress,
+        value: "50000000",    // 0.05 TON = 50,000,000 nanoton
+        body: payloadHex,
+      };
+
+      try {
+        document.getElementById('status').innerText =
+          "Sending transaction... confirm in your wallet.";
+        // Use TONConnect's API to send the transaction
+        const result = await sdk.sendTransaction(tx);
+        console.log("Transaction result:", result);
+        document.getElementById('status').innerText =
+          "Transaction sent! Please check your wallet for confirmation.";
+      } catch (error) {
+        console.error("Transaction error:", error);
+        document.getElementById('status').innerText =
+          "Error sending transaction.";
+      }
+    }
+
+    document.getElementById('claimButton').addEventListener('click', async () => {
+      document.getElementById('status').innerText = "Preparing to claim your reward...";
+      await sendClaimTransaction();
+    });
+  </script>
+</body>
+</html>
