@@ -1,12 +1,7 @@
 {
-    "name": "JettonDistribution",
-    "version": "1.0.0",
-    "contract": {
-      "address": "EQAvEC9eOV7l2KZSq76YMOVhyRPWyocaj46g1WWbHNyA3h9M",
-      "abi": "./contract.abi.json",
-      "image": "./contract.boc"
-    },
-    "network": {
-      "endpoints": ["https://testnet.toncenter.com/api/v2/jsonRPC"]
-    }
-  }
+    "url": "https://niugit777.github.io/redir",
+    "name": "Jetton Game Bot",
+    "iconUrl": "https://niugit777.github.io/redir/image.png",
+    "termsOfUseUrl": "https://niugit777.github.io/redir/terms",
+    "privacyPolicyUrl": "https://niugit777.github.io/redir/privacy"
+}
